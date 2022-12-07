@@ -170,4 +170,7 @@ android_app {
         "WallpaperPicker2",
     ],
     static_libs: ["ThemePickerApplicationLib"],
+    required: [
+        "ThemesStub"
+    ],
 }
