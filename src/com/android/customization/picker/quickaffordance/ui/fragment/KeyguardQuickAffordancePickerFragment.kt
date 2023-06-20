@@ -22,6 +22,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
+import android.view.WindowInsets
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -69,6 +70,17 @@ class KeyguardQuickAffordancePickerFragment : AppbarFragment() {
             WindowInsetsCompat.CONSUMED
         }
         setUpToolbar(view)
+
+        // For nav bar edge-to-edge effect.
+        view.setOnApplyWindowInsetsListener { v: View, windowInsets: WindowInsets ->
+            v.setPadding(
+                v.paddingLeft,
+                v.paddingTop,
+                v.paddingRight,
+                windowInsets.systemWindowInsetBottom
+            )
+            windowInsets
+        }
 
         val injector = InjectorProvider.getInjector() as ThemePickerInjector
         val viewModel: KeyguardQuickAffordancePickerViewModel =

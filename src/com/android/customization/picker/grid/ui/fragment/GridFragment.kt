@@ -23,6 +23,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
+import android.view.WindowInsets
 import android.widget.Button
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -74,6 +75,17 @@ class GridFragment : AppbarFragment() {
             WindowInsetsCompat.CONSUMED
         }
         setUpToolbar(view)
+
+        // For nav bar edge-to-edge effect.
+        view.setOnApplyWindowInsetsListener { v: View, windowInsets: WindowInsets ->
+            v.setPadding(
+                v.paddingLeft,
+                v.paddingTop,
+                v.paddingRight,
+                windowInsets.systemWindowInsetBottom
+            )
+            windowInsets
+        }
 
         val isGridApplyButtonEnabled = BaseFlags.get().isGridApplyButtonEnabled(requireContext())
 

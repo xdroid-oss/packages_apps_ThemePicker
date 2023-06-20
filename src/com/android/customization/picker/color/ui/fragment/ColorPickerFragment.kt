@@ -21,6 +21,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
+import android.view.WindowInsets
 import android.widget.FrameLayout
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -78,6 +79,17 @@ class ColorPickerFragment : AppbarFragment() {
             WindowInsetsCompat.CONSUMED
         }
         setUpToolbar(view)
+
+        // For nav bar edge-to-edge effect.
+        view.setOnApplyWindowInsetsListener { v: View, windowInsets: WindowInsets ->
+            v.setPadding(
+                v.paddingLeft,
+                v.paddingTop,
+                v.paddingRight,
+                windowInsets.systemWindowInsetBottom
+            )
+            windowInsets
+        }
 
         val injector = InjectorProvider.getInjector() as ThemePickerInjector
         val lockScreenView: CardView = view.requireViewById(R.id.lock_preview)
