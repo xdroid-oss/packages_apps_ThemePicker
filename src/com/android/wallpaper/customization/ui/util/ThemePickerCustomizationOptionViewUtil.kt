@@ -184,6 +184,14 @@ constructor(
                                     false,
                                 )
                         )
+                    add(
+                        ICON_PACKS to
+                            layoutInflater.inflate(
+                                R.layout.customization_option_entry_icon_packs,
+                                optionContainer,
+                                false,
+                            )
+                    )
                     if (customizationOptionsData.isGridCustomizationAvailable) {
                         add(
                             GRID to
@@ -194,14 +202,6 @@ constructor(
                                 )
                         )
                     }
-                    add(
-                        ICON_PACKS to
-                            layoutInflater.inflate(
-                                R.layout.customization_option_entry_icon_packs,
-                                optionContainer,
-                                false,
-                            )
-                    )
                 }
         }
     }
