@@ -460,6 +460,12 @@ constructor(private val defaultCustomizationOptionsBinder: DefaultCustomizationO
                 }
 
                 launch {
+                    optionsViewModel.iconPackPickerViewModel.entryIcon.collect { icon ->
+                        optionIconPacksIcon?.setImageDrawable(icon)
+                    }
+                }
+
+                launch {
                     optionsViewModel.onCustomizeIconPacksClicked.collect {
                         optionIconPacks.setOnClickListener { _ -> it?.invoke() }
                     }

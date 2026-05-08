@@ -77,4 +77,14 @@ constructor(
             }
             Text.Loaded(name)
         }
+
+    val entryIcon: Flow<android.graphics.drawable.Drawable?> =
+        previewingIconPack.map { pkg ->
+            if (pkg.isNullOrEmpty()) {
+                appContext.packageManager.getApplicationIcon(appContext.packageName)
+            } else {
+                interactor.installedIconPacks
+                    .firstOrNull { it.packageName == pkg }?.icon
+            }
+        }
 }
