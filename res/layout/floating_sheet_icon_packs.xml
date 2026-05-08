@@ -15,39 +15,24 @@
         android:clipToPadding="false"
         android:clipChildren="false">
 
-        <LinearLayout
+        <FrameLayout
+            android:id="@+id/icon_pack_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:clipToPadding="false"
+            android:clipChildren="false">
 
-            <TextView
-                android:id="@+id/icon_pack_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/icon_pack_title"
-                style="@style/CustomizationOptionEntryTitleTextStyle"
-                android:paddingHorizontal="@dimen/floating_sheet_content_horizontal_padding"
-                android:paddingBottom="@dimen/floating_sheet_content_vertical_padding" />
+            <include
+                layout="@layout/icon_pack_option"
+                android:visibility="invisible" />
 
-            <FrameLayout
-                android:id="@+id/icon_pack_container"
-                android:layout_width="match_parent"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/icon_pack_options"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:clipToPadding="false"
-                android:clipChildren="false">
-
-                <include
-                    layout="@layout/icon_pack_option"
-                    android:visibility="invisible" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/icon_pack_options"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:clipToPadding="false"
-                    android:clipChildren="false" />
-            </FrameLayout>
-        </LinearLayout>
+                android:clipChildren="false" />
+        </FrameLayout>
     </FrameLayout>
 </LinearLayout>
