@@ -32,6 +32,8 @@ import com.android.customization.picker.color.data.repository.ColorPickerReposit
 import com.android.customization.picker.color.data.repository.ColorPickerRepositoryImpl2
 import com.android.customization.picker.icon.data.repository.IconStyleRepository
 import com.android.customization.picker.icon.data.repository.ThemePickerIconStyleRepository
+import com.android.customization.picker.iconpack.data.repository.IconPackRepository
+import com.android.customization.picker.iconpack.data.repository.ThemePickerIconPackRepository
 import com.android.systemui.shared.clocks.ClockRegistry
 import com.android.systemui.shared.customization.data.content.CustomizationProviderClient
 import com.android.systemui.shared.customization.data.content.CustomizationProviderClientImpl
@@ -122,6 +124,12 @@ abstract class ThemePickerAppModule {
     @Binds
     @Singleton
     abstract fun bindIconStyleRepository(impl: ThemePickerIconStyleRepository): IconStyleRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindIconPackRepository(
+        impl: ThemePickerIconPackRepository
+    ): IconPackRepository
 
     @Binds
     @Singleton
