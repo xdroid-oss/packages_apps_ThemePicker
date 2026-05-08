@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="@dimen/floating_sheet_horizontal_padding"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/floating_sheet_content_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/floating_sheet_content_vertical_padding"
+        android:background="@drawable/floating_sheet_content_background"
+        android:clipToPadding="false"
+        android:clipChildren="false">
+
+        <FrameLayout
+            android:id="@+id/icon_pack_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:clipChildren="false">
+
+            <include
+                layout="@layout/icon_pack_option"
+                android:visibility="invisible" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/icon_pack_options"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:clipToPadding="false"
+                android:clipChildren="false" />
+        </FrameLayout>
+    </FrameLayout>
+</LinearLayout>
