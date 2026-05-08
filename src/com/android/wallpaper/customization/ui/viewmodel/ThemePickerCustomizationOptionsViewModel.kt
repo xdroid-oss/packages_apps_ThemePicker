@@ -158,6 +158,7 @@ constructor(
         clockPickerViewModel.setShowKeyguardPreviewRendererSmartspace(true)
         colorPickerViewModel2.resetPreview()
         darkModeViewModel.resetPreview()
+        iconPackPickerViewModel.resetPreview()
     }
 
     override fun onTransitionToSecondaryScreenComplete() {

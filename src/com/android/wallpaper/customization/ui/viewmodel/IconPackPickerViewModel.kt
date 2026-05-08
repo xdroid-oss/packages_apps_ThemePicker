@@ -15,10 +15,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class IconPackPickerViewModel
 @AssistedInject
@@ -34,6 +36,8 @@ constructor(
     }
 
     private val overridingIconPack = MutableStateFlow<String?>(null)
+    private var savedIconPack: String? =
+        runBlocking { interactor.selectedIconPack.first() ?: "" }
 
     val previewingIconPack: StateFlow<String?> =
         combine(interactor.selectedIconPack, overridingIconPack) { current, override ->
@@ -55,6 +59,7 @@ constructor(
                         MutableStateFlow(null)
                     } else {
                         MutableStateFlow({
+                            overridingIconPack.value = pack.packageName
                             viewModelScope.launch {
                                 interactor.setIconPack(pack.packageName)
                             }
@@ -65,7 +70,14 @@ constructor(
         }
 
     val onApply: Flow<(suspend () -> Unit)?> =
-        overridingIconPack.map { null }
+        overridingIconPack.map { override ->
+            if (override != null && override != savedIconPack) {
+                suspend {
+                    savedIconPack = override
+                    overridingIconPack.value = null
+                }
+            } else null
+        }
 
     val summary: Flow<Text> =
         previewingIconPack.map { pkg ->
@@ -87,4 +99,16 @@ constructor(
                     .firstOrNull { it.packageName == pkg }?.icon
             }
         }
+
+    fun resetPreview() {
+        val override = overridingIconPack.value
+        overridingIconPack.value = null
+        if (override != null && override != savedIconPack) {
+            savedIconPack?.let { saved ->
+                viewModelScope.launch {
+                    interactor.setIconPack(saved.ifEmpty { "" })
+                }
+            }
+        }
+    }
 }
