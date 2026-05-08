@@ -23,6 +23,7 @@ import com.android.wallpaper.config.BaseFlags
 import com.android.wallpaper.customization.ui.util.ThemePickerCustomizationOptionUtil.ThemePickerHomeCustomizationOption.APP_ICONS
 import com.android.wallpaper.customization.ui.util.ThemePickerCustomizationOptionUtil.ThemePickerHomeCustomizationOption.COLORS
 import com.android.wallpaper.customization.ui.util.ThemePickerCustomizationOptionUtil.ThemePickerHomeCustomizationOption.GRID
+import com.android.wallpaper.customization.ui.util.ThemePickerCustomizationOptionUtil.ThemePickerHomeCustomizationOption.ICON_PACKS
 import com.android.wallpaper.customization.ui.util.ThemePickerCustomizationOptionUtil.ThemePickerLockCustomizationOption.CLOCK
 import com.android.wallpaper.customization.ui.util.ThemePickerCustomizationOptionUtil.ThemePickerLockCustomizationOption.SHORTCUTS
 import com.android.wallpaper.picker.customization.ui.view.ApplyButton
@@ -61,6 +62,7 @@ constructor(
     clockPickerViewModelFactory: ClockPickerViewModel.Factory,
     gridPickerViewModelFactory: GridPickerViewModel.Factory,
     appIconPickerViewModelFactory: AppIconPickerViewModel.Factory,
+    iconPackPickerViewModelFactory: IconPackPickerViewModel.Factory,
     val colorContrastSectionViewModel: ColorContrastSectionViewModel2,
     val darkModeViewModel: DarkModeViewModel,
     val themedIconViewModel: ThemedIconViewModel,
@@ -90,6 +92,8 @@ constructor(
     val gridPickerViewModel = gridPickerViewModelFactory.create(viewModelScope = viewModelScope)
     val appIconPickerViewModel =
         appIconPickerViewModelFactory.create(viewModelScope = viewModelScope)
+    val iconPackPickerViewModel =
+        iconPackPickerViewModelFactory.create(viewModelScope = viewModelScope)
 
     override val customizationOptionsData: Flow<CustomizationOptionsData> =
         if (BaseFlags.get().isExtendibleThemeManager()) {
@@ -222,6 +226,15 @@ constructor(
                 null
             }
         }
+
+    val onCustomizeIconPacksClicked: Flow<(() -> Unit)?> =
+        selectedOption.map {
+            if (it == null) {
+                { defaultCustomizationOptionsViewModel.selectOption(ICON_PACKS) }
+            } else {
+                null
+            }
+        }
     private val isApplyInProgress: MutableStateFlow<Boolean> = MutableStateFlow(false)
     @OptIn(ExperimentalCoroutinesApi::class)
     val onApplyButtonClicked: Flow<((onComplete: () -> Unit) -> Unit)?> =
@@ -231,6 +244,7 @@ constructor(
                     CLOCK -> clockPickerViewModel.onApply
                     SHORTCUTS -> keyguardQuickAffordancePickerViewModel2.onApply
                     GRID -> gridPickerViewModel.onApply
+                    ICON_PACKS -> iconPackPickerViewModel.onApply
                     APP_ICONS ->
                         if (BaseFlags.get().isExtendibleThemeManager()) {
                             appIconPickerViewModel.iconStyleAndShapeOnApply
