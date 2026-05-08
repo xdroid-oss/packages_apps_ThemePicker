@@ -57,6 +57,9 @@ constructor(
                     } else {
                         MutableStateFlow({
                             overridingIconPack.value = pack.packageName
+                            viewModelScope.launch {
+                                interactor.setIconPack(pack.packageName)
+                            }
                         } as (() -> Unit)?)
                     },
                 )
@@ -64,11 +67,12 @@ constructor(
         }
 
     val onApply: Flow<(suspend () -> Unit)?> =
-        combine(interactor.selectedIconPack, overridingIconPack) { current, override ->
-            if (override != null && override != current) {
+        overridingIconPack.map { override ->
+            if (override != null && override != savedIconPack) {
                 suspend {
                     interactor.setIconPack(override)
                     savedIconPack = override
+                    overridingIconPack.value = null
                 }
             } else null
         }
