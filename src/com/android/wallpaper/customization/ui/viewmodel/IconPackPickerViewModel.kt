@@ -33,26 +33,30 @@ constructor(
         fun create(viewModelScope: CoroutineScope): IconPackPickerViewModel
     }
 
+    private val overridingIconPack = MutableStateFlow<String?>(null)
     private var savedIconPack: String? =
         runBlocking { interactor.selectedIconPack.first() ?: "" }
 
+    val previewingIconPack: Flow<String?> =
+        combine(interactor.selectedIconPack, overridingIconPack) { current, override ->
+            override ?: current
+        }
+
     val packOptions: Flow<List<OptionItemViewModel2<IconPackInfo>>> =
-        combine(interactor.selectedIconPack, flowOf(interactor.installedIconPacks)) { current, packs ->
+        combine(previewingIconPack, flowOf(interactor.installedIconPacks)) { previewingPkg, packs ->
             packs.map { pack ->
-                val isSelected = pack.packageName == current
+                val isPreviewed = pack.packageName == previewingPkg
                 OptionItemViewModel2(
                     key = MutableStateFlow(pack.packageName.ifEmpty { "system" }),
                     payload = pack,
                     text = Text.Loaded(pack.name),
-                    isSelected = MutableStateFlow(isSelected),
+                    isSelected = MutableStateFlow(isPreviewed),
                     skipForegroundColorBinding = true,
-                    onClicked = if (isSelected) {
+                    onClicked = if (isPreviewed) {
                         MutableStateFlow(null)
                     } else {
                         MutableStateFlow({
-                            viewModelScope.launch {
-                                interactor.setIconPack(pack.packageName)
-                            }
+                            overridingIconPack.value = pack.packageName
                         } as (() -> Unit)?)
                     },
                 )
@@ -60,10 +64,17 @@ constructor(
         }
 
     val onApply: Flow<(suspend () -> Unit)?> =
-        MutableStateFlow(null)
+        combine(interactor.selectedIconPack, overridingIconPack) { current, override ->
+            if (override != null && override != current) {
+                suspend {
+                    interactor.setIconPack(override)
+                    savedIconPack = override
+                }
+            } else null
+        }
 
     val summary: Flow<Text> =
-        interactor.selectedIconPack.map { pkg ->
+        previewingIconPack.map { pkg ->
             val name = if (pkg.isNullOrEmpty()) {
                 appContext.getString(R.string.icon_pack_system_default)
             } else {
@@ -74,7 +85,7 @@ constructor(
         }
 
     val entryIcon: Flow<android.graphics.drawable.Drawable?> =
-        interactor.selectedIconPack.map { pkg ->
+        previewingIconPack.map { pkg ->
             if (pkg.isNullOrEmpty()) {
                 appContext.packageManager.getApplicationIcon(appContext.packageName)
             } else {
@@ -84,9 +95,13 @@ constructor(
         }
 
     fun resetPreview() {
-        savedIconPack?.let { saved ->
-            viewModelScope.launch {
-                interactor.setIconPack(saved.ifEmpty { "" })
+        val override = overridingIconPack.value
+        overridingIconPack.value = null
+        if (override != null && override != savedIconPack) {
+            savedIconPack?.let { saved ->
+                viewModelScope.launch {
+                    interactor.setIconPack(saved.ifEmpty { "" })
+                }
             }
         }
     }
