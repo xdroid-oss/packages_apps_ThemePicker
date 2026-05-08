@@ -225,6 +225,29 @@ constructor(
                                     }
                             }
 
+                            launch {
+                                var hasEmitted = false
+                                viewModel.iconPackPickerViewModel.iconPackOverride
+                                    .collect { override ->
+                                        if (override != null) {
+                                            hasEmitted = true
+                                            safeSendMessage(
+                                                workspaceCallback,
+                                                MESSAGE_ID_UPDATE_ICON_PACK,
+                                                bundleOf(KEY_ICON_PACK_VALUE to override),
+                                            )
+                                        } else if (hasEmitted) {
+                                            // Override was cleared (e.g. resetPreview),
+                                            // tell preview to revert to default
+                                            safeSendMessage(
+                                                workspaceCallback,
+                                                MESSAGE_ID_UPDATE_ICON_PACK,
+                                                bundleOf(KEY_ICON_PACK_VALUE to ""),
+                                            )
+                                        }
+                                    }
+                            }
+
                             if (BaseFlags.get().isExtendibleThemeManager()) {
                                 launch {
                                     viewModel.appIconPickerViewModel.previewingIconStyle.collect {
@@ -273,6 +296,8 @@ constructor(
         const val MESSAGE_ID_UPDATE_COLOR = 856
         @Deprecated("Use [MESSAGE_ID_UPDATE_COMMAND] instead")
         const val MESSAGE_ID_UPDATE_ICON_THEMED = 311
+        const val MESSAGE_ID_UPDATE_ICON_PACK = 1738
+        const val KEY_ICON_PACK_VALUE: String = "icon_pack_value"
         const val KEY_COLOR_RESOURCE_IDS: String = "color_resource_ids"
         const val KEY_COLOR_VALUES: String = "color_values"
         const val KEY_DARK_MODE: String = "use_dark_mode"

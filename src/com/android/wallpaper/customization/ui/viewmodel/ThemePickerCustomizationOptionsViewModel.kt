@@ -130,7 +130,7 @@ constructor(
         defaultCustomizationOptionsViewModel.discardChangesDialogViewModel
 
     override fun handleBackPressed(): Boolean {
-        if (applyButtonState.value == APPLY_BUTTON_ENABLED) {
+        if (applyButtonState.value == APPLY_BUTTON_ENABLED && !isApplyInProgress.value) {
             defaultCustomizationOptionsViewModel.showDiscardChangesDialogViewModel(
                 // Hide the picker's clock when we start the transition back to the primary screen.
                 onDiscard = { clockPickerViewModel.setShowPickerClockControllerView(false) }
@@ -158,6 +158,7 @@ constructor(
         clockPickerViewModel.setShowKeyguardPreviewRendererSmartspace(true)
         colorPickerViewModel2.resetPreview()
         darkModeViewModel.resetPreview()
+        iconPackPickerViewModel.resetPreview()
     }
 
     override fun onTransitionToSecondaryScreenComplete() {
