@@ -668,4 +668,6 @@
     Example: "value 3, range from 1 to 7". [CHAR LIMIT=none]
     -->
     <string name="slider_state_description_template">%1$d, range from %2$d to %3$d</string>
+    <string name="icon_pack_title">Icon pack</string>
+    <string name="icon_pack_system_default">System Icons</string>
 </resources>

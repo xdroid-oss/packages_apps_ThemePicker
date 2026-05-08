@@ -32,6 +32,7 @@ import com.android.wallpaper.customization.ui.util.ThemePickerCustomizationOptio
 import com.android.wallpaper.customization.ui.util.ThemePickerCustomizationOptionUtil.ThemePickerHomeCustomizationOption.COLORS
 import com.android.wallpaper.customization.ui.util.ThemePickerCustomizationOptionUtil.ThemePickerHomeCustomizationOption.COLOR_CONTRAST
 import com.android.wallpaper.customization.ui.util.ThemePickerCustomizationOptionUtil.ThemePickerHomeCustomizationOption.GRID
+import com.android.wallpaper.customization.ui.util.ThemePickerCustomizationOptionUtil.ThemePickerHomeCustomizationOption.ICON_PACKS
 import com.android.wallpaper.customization.ui.util.ThemePickerCustomizationOptionUtil.ThemePickerHomeCustomizationOption.PACK_THEME
 import com.android.wallpaper.customization.ui.util.ThemePickerCustomizationOptionUtil.ThemePickerHomeCustomizationOption.SCREEN_SAVER
 import com.android.wallpaper.customization.ui.util.ThemePickerCustomizationOptionUtil.ThemePickerLockCustomizationOption.CLOCK
@@ -193,6 +194,14 @@ constructor(
                                 )
                         )
                     }
+                    add(
+                        ICON_PACKS to
+                            layoutInflater.inflate(
+                                R.layout.customization_option_entry_icon_packs,
+                                optionContainer,
+                                false,
+                            )
+                    )
                 }
         }
     }
@@ -252,6 +261,12 @@ constructor(
                     },
                 )
             }
+            put(
+                ICON_PACKS,
+                inflateFloatingSheet(ICON_PACKS, bottomSheetContainer, layoutInflater).also {
+                    bottomSheetContainer.addView(it)
+                },
+            )
         }
     }
 
@@ -275,6 +290,7 @@ constructor(
             COLORS -> R.layout.floating_sheet_colors
             APP_ICONS -> R.layout.floating_sheet_app_icon
             GRID -> R.layout.floating_sheet_grid
+            ICON_PACKS -> R.layout.floating_sheet_icon_packs
             else ->
                 throw IllegalStateException(
                     "Customization option $option does not have a bottom sheet view"
