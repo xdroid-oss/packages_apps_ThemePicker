@@ -3,6 +3,7 @@ package com.android.wallpaper.customization.ui.viewmodel
 import android.content.Context
 import com.android.customization.picker.iconpack.IconPackInfo
 import com.android.customization.picker.iconpack.domain.interactor.IconPackInteractor
+import com.android.themepicker.R
 import com.android.wallpaper.picker.common.text.ui.viewmodel.Text
 import com.android.wallpaper.picker.option.ui.viewmodel.OptionItemViewModel2
 import dagger.assisted.Assisted
@@ -65,4 +66,15 @@ constructor(
 
     val onApply: Flow<(suspend () -> Unit)?> =
         overridingIconPack.map { null }
+
+    val summary: Flow<Text> =
+        previewingIconPack.map { pkg ->
+            val name = if (pkg.isNullOrEmpty()) {
+                appContext.getString(R.string.icon_pack_system_default)
+            } else {
+                interactor.installedIconPacks
+                    .firstOrNull { it.packageName == pkg }?.name ?: pkg
+            }
+            Text.Loaded(name)
+        }
 }
