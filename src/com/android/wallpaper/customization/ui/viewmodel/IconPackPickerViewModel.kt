@@ -70,8 +70,8 @@ constructor(
         }
 
     val onApply: Flow<(suspend () -> Unit)?> =
-        overridingIconPack.map { override ->
-            if (override != null && override != savedIconPack) {
+        combine(interactor.selectedIconPack, overridingIconPack) { current, override ->
+            if (override != null && override != current) {
                 suspend {
                     savedIconPack = override
                     overridingIconPack.value = null
