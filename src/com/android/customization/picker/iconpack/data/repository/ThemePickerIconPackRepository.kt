@@ -40,9 +40,6 @@ constructor(
     companion object {
         private const val ICON_PACK_PATH = "icon_pack"
         private const val ICON_PACK_VALUE = "icon_pack_value"
-
-        @Volatile
-        private var cachedPacks: List<IconPackInfo>? = null
     }
 
     private val metadataKey = "com.android.launcher3.themedicon.option"
@@ -61,14 +58,7 @@ constructor(
     }
 
     override val installedIconPacks: List<IconPackInfo>
-        get() {
-            var packs = cachedPacks
-            if (packs == null) {
-                packs = IconPackUtil.getInstalledIconPacks(appContext)
-                cachedPacks = packs
-            }
-            return packs
-        }
+        get() = IconPackUtil.getInstalledIconPacks(appContext)
 
     override val selectedIconPack: Flow<String?> =
         previewUtilsFlow

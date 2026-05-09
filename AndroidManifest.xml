@@ -51,9 +51,24 @@
         <intent>
             <action android:name="android.service.wallpaper.WallpaperService" />
         </intent>
-        <!-- Intent filter with action used to discover partner -->
+        <!-- Intent filter used to discover partner -->
         <intent>
             <action android:name="com.android.launcher3.action.PARTNER_CUSTOMIZATION" />
+        </intent>
+        <!-- Intent filters for discovering installed icon packs -->
+        <intent>
+            <action android:name="com.novalauncher.THEME" />
+        </intent>
+        <intent>
+            <action android:name="org.adw.launcher.icons.ACTION_PICK_ICON" />
+        </intent>
+        <intent>
+            <action android:name="com.dlto.atom.launcher.THEME" />
+        </intent>
+        <!-- Intent filter with action MAIN and category com.anddoes.launcher.THEME -->
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="com.anddoes.launcher.THEME" />
         </intent>
         <!-- Intent filter used to query the launcher Activity for grid preview metadata -->
         <intent>
