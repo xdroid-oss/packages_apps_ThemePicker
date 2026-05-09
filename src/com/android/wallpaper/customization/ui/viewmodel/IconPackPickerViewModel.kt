@@ -13,11 +13,11 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class IconPackPickerViewModel
@@ -33,7 +33,12 @@ constructor(
         fun create(viewModelScope: CoroutineScope): IconPackPickerViewModel
     }
 
-    private val overridingIconPack = MutableStateFlow<String?>(null)
+    private val _overridingIconPack = MutableStateFlow<String?>(null)
+    private val overridingIconPack: StateFlow<String?> = _overridingIconPack
+
+    /** Emits the user's active icon pack override, or null if no override is active. */
+    val iconPackOverride: StateFlow<String?> = _overridingIconPack
+
     private var savedIconPack: String? =
         runBlocking { interactor.selectedIconPack.first() ?: "" }
 
@@ -56,10 +61,7 @@ constructor(
                         MutableStateFlow(null)
                     } else {
                         MutableStateFlow({
-                            overridingIconPack.value = pack.packageName
-                            viewModelScope.launch {
-                                interactor.setIconPack(pack.packageName)
-                            }
+                            _overridingIconPack.value = pack.packageName
                         } as (() -> Unit)?)
                     },
                 )
@@ -72,7 +74,7 @@ constructor(
                 suspend {
                     interactor.setIconPack(override)
                     savedIconPack = override
-                    overridingIconPack.value = null
+                    _overridingIconPack.value = null
                 }
             } else null
         }
@@ -99,14 +101,6 @@ constructor(
         }
 
     fun resetPreview() {
-        val override = overridingIconPack.value
-        overridingIconPack.value = null
-        if (override != null && override != savedIconPack) {
-            savedIconPack?.let { saved ->
-                viewModelScope.launch {
-                    interactor.setIconPack(saved.ifEmpty { "" })
-                }
-            }
-        }
+        _overridingIconPack.value = null
     }
 }
