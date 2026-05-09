@@ -231,14 +231,17 @@ constructor(
                                     .collect { override ->
                                         if (override != null) {
                                             hasEmitted = true
+                                            // Translate "" (System Icons) to sentinel so ""
+                                            // can mean "revert to saved" unambiguously
+                                            val value = override.ifEmpty { "system_icons" }
                                             safeSendMessage(
                                                 workspaceCallback,
                                                 MESSAGE_ID_UPDATE_ICON_PACK,
-                                                bundleOf(KEY_ICON_PACK_VALUE to override),
+                                                bundleOf(KEY_ICON_PACK_VALUE to value),
                                             )
                                         } else if (hasEmitted) {
                                             // Override was cleared (e.g. resetPreview),
-                                            // tell preview to revert to default
+                                            // tell preview to revert to saved icon pack
                                             safeSendMessage(
                                                 workspaceCallback,
                                                 MESSAGE_ID_UPDATE_ICON_PACK,
